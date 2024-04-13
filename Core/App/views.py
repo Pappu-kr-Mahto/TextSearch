@@ -13,11 +13,20 @@ from rest_framework_simplejwt.tokens import RefreshToken
 import string
 from collections import Counter
 
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
+from drf_spectacular.types import OpenApiTypes
+
 # Create your views here.
 
 def home(request):
     return HttpResponse(" server is live ")
 
+
+@extend_schema(
+        request=UserSerializer,
+        responses={201: None},
+        description="Enter the username, email, dob, password to create an account."
+    )
 @api_view(['POST'])
 def signup(request):
     try:
@@ -32,7 +41,13 @@ def signup(request):
         
     except Exception as e:
         return Response({"error":'Internal server Error'},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
+
+
+@extend_schema(
+        request=LoginSerializer,
+        responses={200: None},
+        description="Enter the email and password for login. And Authorize with the access key given after login."
+    )
 @api_view(['POST'])
 def login(request):
     try:
@@ -58,6 +73,9 @@ def login(request):
         return Response({"error":"Invalid Credentials"},status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(
+        responses={200: ParagraphSerializer},
+    )
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def allParagraph(request):
@@ -69,6 +87,12 @@ def allParagraph(request):
     except Exception as e:
         return Response({'error':'Internal Server Error '},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+@extend_schema(
+        request=ParagraphSerializer,
+        responses={201: None},
+        description=" Enter the paragraph / multi-paragraph in the form of list of items/paragraph. "
+    )
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def addParagraph(request):
@@ -99,12 +123,18 @@ def addParagraph(request):
     except Exception as e:
         return Response({"error":'Internal server Error'},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+@extend_schema(
+        request=None,
+        responses={200: ParagraphSerializer},
+        description="Enter the word / text to be search in all your doucments."
+    )
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def wordSearch(request,word):
     try:
         user = CustomUserModel.objects.get(email = request.user)
-        data=WordsTokanize.objects.filter(word=word , user=user).values().order_by('-occurrence')[:10]
+        data=WordsTokanize.objects.filter(word=word.lower() , user=user).values().order_by('-occurrence')[:10]
         para_ids = [ob.get('paragraph_id', 0) for ob in data]
         para_data=Paragraph.objects.filter(id__in=para_ids,user=user).values()
         return Response({'data': para_data},status=status.HTTP_200_OK)

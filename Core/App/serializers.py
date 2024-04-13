@@ -10,3 +10,12 @@ class UserSerializer(serializers.ModelSerializer):
             if CustomUserModel.objects.filter(email = data['email']).exists():
                 raise serializers.ValidationError({'error': 'User already exists with this username/email '})
             return data
+
+class ParagraphSerializer(serializers.ModelSerializer):
+    class Meta:
+        model  = Paragraph
+        fields = '__all__'
+
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()
