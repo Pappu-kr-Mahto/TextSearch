@@ -21,7 +21,7 @@ from drf_spectacular.types import OpenApiTypes
 def home(request):
     return HttpResponse(" server is live ")
 
-
+''' API for the user registration. '''
 @extend_schema(
         request=UserSerializer,
         responses={201: None},
@@ -42,7 +42,7 @@ def signup(request):
     except Exception as e:
         return Response({"error":'Internal server Error'},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
+''' API for the login of user. '''
 @extend_schema(
         request=LoginSerializer,
         responses={200: None},
@@ -72,7 +72,7 @@ def login(request):
     except Exception as e:
         return Response({"error":"Invalid Credentials"},status=status.HTTP_400_BAD_REQUEST)
 
-
+''' API to get all the saved paragraphs of the requested user. '''
 @extend_schema(
         responses={200: ParagraphSerializer},
     )
@@ -87,7 +87,7 @@ def allParagraph(request):
     except Exception as e:
         return Response({'error':'Internal Server Error '},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
+''' API to add single / multiple paragraph. '''
 @extend_schema(
         request=ParagraphSerializer,
         responses={201: None},
@@ -123,7 +123,7 @@ def addParagraph(request):
     except Exception as e:
         return Response({"error":'Internal server Error'},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
+''' API that searches word/text from all the paragraph from your saved paragraphs. '''
 @extend_schema(
         request=None,
         responses={200: ParagraphSerializer},
