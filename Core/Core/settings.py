@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-36bt!2^4l1q(v9_p0^vh+(3mw3$fbdtt9hy-e5*yu5*4rz4h^(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1:8000","localhost:8000","codemonk-textsearch.onrender.com"]
 
 
 # Application definition
@@ -161,3 +161,9 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=100),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
+
+CORS_ALLOWED_ORIGINS = [
+    "http://127.0.0.1:8000",
+    "http://localhost:8000",
+    "codemonk-textsearch.onrender.com",
+]
