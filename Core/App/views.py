@@ -19,7 +19,14 @@ from drf_spectacular.types import OpenApiTypes
 # Create your views here.
 
 def home(request):
-    return HttpResponse(" server is live ")
+    return render(request,"home.html")
+
+def loginUI(request):
+    return render(request,"login.html")
+
+def signupUI(request):
+    return render(request,"signup.html")
+
 
 ''' API for the user registration. '''
 @extend_schema(
@@ -35,9 +42,9 @@ def signup(request):
         if serializer.is_valid():
             user=CustomUserModel.objects.create_user(email = serializer.validated_data['email'] , username=serializer.validated_data['username'] , dob= serializer.validated_data['dob'] , password = serializer.validated_data['password'])
 
-            return Response({"msg":"Account Created successfully","username":request.data['username'],"email":request.data['email']},status=status.HTTP_201_CREATED)
+            return Response({"success":"Account Created successfully","username":request.data['username'],"email":request.data['email']},status=status.HTTP_201_CREATED)
         else:
-            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error":'Internal server Error'},status=status.HTTP_400_BAD_REQUEST)
         
     except Exception as e:
         return Response({"error":'Internal server Error'},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -54,7 +61,7 @@ def login(request):
         email= request.data.get('email')
         password = request.data.get('password')
         if email is None or password is None:
-            return Response({'message': 'Please provide both email and password'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Please provide both email and password'}, status=status.HTTP_400_BAD_REQUEST)
         
         user = CustomUserModel.objects.filter(email=email).first()
         print(user.username)
@@ -91,7 +98,7 @@ def allParagraph(request):
 @extend_schema(
         request=ParagraphSerializer,
         responses={201: None},
-        description=" Enter the paragraph / multi-paragraph in the form of list of items/paragraph. "
+        description=" Enter the paragraph / multi-paragraph in the form of list of items/paragraph.  Example: \{ \"paragraph\":[ \"First Paragraph\" , \" Second Paragraph\"] \}"
     )
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])

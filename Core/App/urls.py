@@ -3,7 +3,12 @@ from . import views
 
 
 urlpatterns = [
-    path('',views.home,name="home"),
+    path('',views.loginUI,name="app-login"),
+
+    #urls for navagating UI
+    path('app-home/',views.home,name="app-home"),
+    path('app-login/',views.loginUI,name="app-login"),
+    path('app-signup/',views.signupUI,name="app-signup"),
 
     path('api/signup/',views.signup,name="signup"),
     path('api/login/',views.login,name="login"),

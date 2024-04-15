@@ -1,0 +1,187 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Project | TextSearch</title>
+  </head>
+
+  <body>
+    <div class="container-fluid border" >
+        <nav class="navbar  navbar-expand-xl bg-body-tertiary">
+            <div class="container-fluid">
+              <span class="navbar-brand" >CodeMonk - TextSearch </span>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse"    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"     aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+            <button class="btn btn-outline-danger" onclick="handleLogout()">Logout</button>
+            </div>
+        </nav>
+    </div>
+
+    <div class="p-5 container" style="background-color: rgb(236, 236, 235); min-height: 90vh;">
+        <div class="mb-3 row">
+            <div class="input-group mb-3">
+                <button class="btn btn-success" type="button" id="button-addon2" style="width: 100px;" onclick="handleSearch()">Search</button>
+                <input type="text" class="form-control" placeholder="Enter Word to Search" id="searchText" aria-describedby="button-addon2" style="height: 45px;">
+                <button class="btn btn-secondary" type="button" id="button-addon2" style="width: 150px;" data-bs-toggle="modal" data-bs-target="#staticBackdrop">+ Add Paragraph</button>
+            </div>
+        </div>
+      <div class="row mx-4 mt-2">
+            <table class="table table-hover border border-2">
+                <thead>
+                    <tr style="background-color: rgb(62, 62, 62); color: white;">
+                        <th> ID</th>
+                        <th class="text-center"> Paragraph </th>
+                    </tr>
+                </thead>
+                <tbody id="tbody" >
+
+                </tbody>
+            </table>
+      </div>
+    </div>
+    
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Add Paragraph</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form>
+            <div class="modal-body">
+                <textarea name="paratext" cols="30" rows="10" id="paratext" class="form-control" placeholder="Enter paragraph details" required ></textarea>
+            </div>
+            <div class="modal-footer ">
+            <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-success " onclick="handleAddPara(event)">+ Add</button>
+        </form>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <script>
+        const baseURL = window.location.origin;
+        
+        function checkUserLogin(){
+            const token = localStorage.getItem('token')
+            const user = localStorage.getItem('user')
+            if(token && user){
+                console.log("working")
+                getUserParagraph()
+            }
+            else{
+                console.log("not working")
+                window.location.assign(`${baseURL}/app-login/`)
+            }
+        }
+        checkUserLogin()
+
+        async function getUserParagraph(){
+            const URL = `${baseURL}/api/all-paragraph/`
+            const token = `Bearer ${localStorage.getItem('token')}`
+            const response = await fetch(URL,{
+                    method:"GET",
+                    headers:{
+                    'Content-Type': 'application/json', 
+                    'Authorization': token
+                    }
+                    });
+                const result = await response.json();
+                console.log(result);
+                
+                para="";
+                result.map((item)=>{
+                    para+=`<tr><td>${item.id}</td><td>${item.paragraph}</td>
+                        </tr>`
+                })
+                document.getElementById('tbody').innerHTML=para;
+
+        }
+
+        function handleLogout(){
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            window.location.assign(`${baseURL}/app-login/`)
+        }
+
+        async function handleSearch(){
+            const word=document.getElementById('searchText').value;
+            if(!word){
+                window.location.reload()
+            }
+            const URL = `${baseURL}/api/word-search/${word}`
+            const token = `Bearer ${localStorage.getItem('token')}`
+            const response = await fetch(URL,{
+                    method:"GET",
+                    headers:{
+                    'Content-Type': 'application/json', 
+                    'Authorization': token
+                    }
+                    });
+                const result = await response.json();
+                console.log(result);
+                
+                para="";
+                result['data'].map((item)=>{
+                    para+=`<tr><td>${item.id}</td><td class="paraWords">${item.paragraph}</td>
+                        </tr>`
+                })
+                document.getElementById('tbody').innerHTML=para;
+
+                var contentDivs = document.querySelectorAll('.paraWords');
+                const wordsHighlight = word;
+                contentDivs.forEach(function(contentDiv) {
+                    var content = contentDiv.innerHTML;
+                        var regex = new RegExp('\\b' + word + '\\b', 'gi');
+                        content = content.replace(regex, '<span style="background-color: rgb(244, 244, 29);">$&</span>');
+                        contentDiv.innerHTML = content;
+                });
+        }
+
+        async function handleAddPara(){
+            event.preventDefault();
+
+            const URL = `${baseURL}/api/add-paragraph/`
+            const token = `Bearer ${localStorage.getItem('token')}`
+            const data = document.getElementById("paratext").value;
+            console.log(data)
+            list_data = data.split("\n\n")
+            console.log(list_data)
+            const response = await fetch(URL,{
+                    method:"POST",
+                    headers:{
+                    'Content-Type': 'application/json', 
+                    'Authorization': token
+                    },
+                    body:JSON.stringify({"paragraph":list_data})
+                    });
+                const result = await response.json();
+                console.log(result);
+
+                if(result['success']){
+                    alert('Paragraph Added Successfully.')
+                    window.location.reload()
+                }
+                else{
+                    alert('Something went wrong! Try Again.')
+                }
+           
+        }
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  </body>
+</html>
