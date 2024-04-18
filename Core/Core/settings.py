@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-36bt!2^4l1q(v9_p0^vh+(3mw3$fbdtt9hy-e5*yu5*4rz4h^(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1:8000","localhost:8000","https://codemonk-textsearch.onrender.com", "*"]
+ALLOWED_HOSTS = ["127.0.0.1:8000","localhost:8000", "*"]
 
 
 # Application definition
@@ -149,8 +149,8 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Codemonk - TextSearch Project',
-    'DESCRIPTION': 'This project helps to search the text/word in your saved document',
+    'TITLE': 'TextSearch Project',
+    'DESCRIPTION': 'This application saves your document in the form of paragraphs and returns the top paragraphs in which the searched text/word is present.',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
     # OTHER SETTINGS
@@ -165,5 +165,5 @@ SIMPLE_JWT = {
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",
     "http://localhost:8000",
-    "https://codemonk-textsearch.onrender.com",
+   
 ]
