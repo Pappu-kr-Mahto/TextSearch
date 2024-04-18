@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-36bt!2^4l1q(v9_p0^vh+(3mw3$fbdtt9hy-e5*yu5*4rz4h^(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1:8000","localhost:8000","https://codemonk-textsearch.onrender.com", "*"]
 
 
 # Application definition
@@ -48,6 +48,7 @@ AUTH_USER_MODEL = "App.CustomUserModel"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -80,20 +81,20 @@ WSGI_APPLICATION = 'Core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 # connection settings of postgres database
-DATABASES = {
-    'default': dj_database_url.config(
-        default='postgres://pappu:27C1ID9sEeiThQb0UaSeCU1irxYijPNY@dpg-codgco0l5elc73fno2jg-a.oregon-postgres.render.com/textsearch_db',
-        conn_max_age=600
-    )
-}
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         default='postgres://pappu:27C1ID9sEeiThQb0UaSeCU1irxYijPNY@dpg-codgco0l5elc73fno2jg-a.oregon-postgres.render.com/textsearch_db',
+#         conn_max_age=600
+#     )
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -160,3 +161,9 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=100),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
+
+CORS_ALLOWED_ORIGINS = [
+    "http://127.0.0.1:8000",
+    "http://localhost:8000",
+    "https://codemonk-textsearch.onrender.com",
+]

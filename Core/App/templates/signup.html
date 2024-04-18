@@ -23,24 +23,15 @@
                 <span class="navbar-toggler-icon"></span>
               </button>
               <div>
-                <a class="mx-1 btn btn-success" href="{% url 'app-login'%}">Sing In</a>
-                <a class="mx-1 btn btn-outline-warning" href="{% url 'app-signup'%}">Sing Up</a>
+                <a class="mx-1 btn btn-success" href="{% url 'app-login'%}">Log In</a>
+                <a class="mx-1 btn btn-outline-warning" href="{% url 'app-signup'%}">Sign Up</a>
             </div>
         </div>
         </nav>
     </div>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-3 m-auto py-3 ">
-                {% for msg in messages %}
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{msg}}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                
-                {% endfor %}
+            <div class="col col-lg-3 col-md-6 col-sm-8 m-auto py-3 ">
                 <div class="mt-5 p-4" style="border: 1px solid gray; border-radius: 5px;">
                     <form method="POST" id="myform" onsubmit="handleSignup(event)" enctype="multipart/form-data">
                         {% csrf_token %}
@@ -72,7 +63,7 @@
                         </div>
                         <div style="text-align: center;">
                             <hr >
-                            Already Have account? <a href="{% url 'app-login'%}">Sign In</a> Here
+                            Already Have account? <a href="{% url 'app-login'%}">Log In</a> Here
                         </div>
                     </form>
                 </div>
